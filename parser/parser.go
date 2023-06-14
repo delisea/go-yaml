@@ -167,7 +167,8 @@ func (p *parser) createMapValueNode(ctx *context, key ast.MapKeyNode, colonToken
 		return ast.Null(nullToken), nil
 	}
 
-	if tk.Position.Column < key.GetToken().Position.Column {
+	if tk.Position.Column < key.GetToken().Position.Column && tk.Type != token.CommentType {
+		// if ncTk := ctx.nextNotCommentToken(); ncTk == nil || tk.Position.Column < ncTk.Position.Column {
 		// in this case,
 		// ----
 		//   key: <value does not defined>
