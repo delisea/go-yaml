@@ -1165,7 +1165,7 @@ func (n *MappingNode) startPos() *token.Position {
 }
 
 // Merge merge key/value of map.
-func (n *MappingNode) Merge(target *MappingNode) {
+func (n *MappingNode) Merge(target *MappingNode) error {
 	keyToMapValueMap := map[string]*MappingValueNode{}
 	for _, value := range n.Values {
 		key := value.Key.String()
@@ -1176,11 +1176,14 @@ func (n *MappingNode) Merge(target *MappingNode) {
 	for _, value := range target.Values {
 		mapValue, exists := keyToMapValueMap[value.Key.String()]
 		if exists {
-			mapValue.Value = value.Value
+			if err := Merge(mapValue.Value, value.Value); err != nil {
+				return err
+			}
 		} else {
 			n.Values = append(n.Values, value)
 		}
 	}
+	return nil
 }
 
 // SetIsFlowStyle set value to IsFlowStyle field recursively.
@@ -2102,8 +2105,7 @@ func Merge(dst Node, src Node) error {
 		if !ok {
 			return err
 		}
-		node.Merge(target)
-		return nil
+		return node.Merge(target)
 	case SequenceType:
 		node := dst.(*SequenceNode)
 		target, ok := src.(*SequenceNode)
