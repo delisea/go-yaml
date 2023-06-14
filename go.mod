@@ -1,5 +1,5 @@
 module github.com/delsiea/go-yaml
-# temporary fork from goccy/go-yaml
+// temporary fork from goccy/go-yaml
 
 go 1.18
 
